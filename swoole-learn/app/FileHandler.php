@@ -14,16 +14,24 @@ class FileHandler extends AbstractHandler
 {
     protected static $_resource = null;
     protected static $_date = null;
+    protected static $_async;
 
-    public function __construct($level = Logger::DEBUG, $bubble = true)
+    public function __construct($level = Logger::DEBUG, $async = true, $bubble = true)
     {
+        self::$_async = $async;
         parent::__construct($level, $bubble);
     }
 
     public function handle(array $record)
     {
         $fh = self::getInstance();
-        \Swoole\Coroutine::fwrite($fh, json_encode($record) . "\n");
+        switch (self::$_async) {
+            case true:
+                \Swoole\Coroutine::fwrite($fh, json_encode($record) . "\n");
+                break;
+            case false:
+                fwrite($fh, (string) $record['formatted']);
+        }
     }
 
     protected static function getInstance()
