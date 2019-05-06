@@ -39,10 +39,10 @@ class FluentHandler extends AbstractHandler
         self::getInstance();
         switch (self::$_async) {
             case true:
-                self::$_client->send(json_encode(array("info.abc", time(), array("swoole" => "hello swoole"))));
+                self::$_client->send(\GuzzleHttp\json_encode(array("info.abc", time(), array("swoole" => "hello swoole"))));
                 break;
             case false:
-                self::$_client->post("debug.test",array("hello"=>"world"));
+                self::$_client->post("debug.test", array("hello"=>"world"));
                 break;
         }
     }

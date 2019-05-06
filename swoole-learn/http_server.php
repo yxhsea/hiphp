@@ -13,6 +13,7 @@ use Symfony\Component\Dotenv\Dotenv;
 $dotenv = new Dotenv();
 $dotenv->load(__DIR__ . '/.env');
 
+print_r(env("WORKER_NUM"));
 print_r($_ENV['WORKER_NUM']);
 print_r(getenv('WORKER_NUM'));
 

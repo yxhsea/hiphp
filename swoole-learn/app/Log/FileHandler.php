@@ -27,7 +27,7 @@ class FileHandler extends AbstractHandler
         $fh = self::getInstance();
         switch (self::$_async) {
             case true:
-                \Swoole\Coroutine::fwrite($fh, json_encode($record) . "\n");
+                \Swoole\Coroutine::fwrite($fh, \GuzzleHttp\json_encode($record) . "\n");
                 break;
             case false:
                 fwrite($fh, (string) $record['formatted']);
