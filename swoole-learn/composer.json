@@ -10,7 +10,9 @@
         "symfony/console": "^4.2",
         "fluent/logger": "^1.0",
         "guzzlehttp/guzzle": "^6.3",
-        "doctrine/migrations": "^2.0"
+        "doctrine/migrations": "^2.0",
+        "php-amqplib/php-amqplib": "^2.9",
+        "symfony/finder": "^4.2"
     },
     "autoload": {
         "classmap": [],

@@ -16,3 +16,8 @@ if (!file_exists($file = __DIR__ . '/../vendor/autoload.php')) {
 
 include $file;
 define("ROOT_PATH", realpath(__DIR__ . '/../'));
+
+use Symfony\Component\Dotenv\Dotenv;
+
+$dotenv = new Dotenv();
+$dotenv->load(__DIR__ . '/../.env');

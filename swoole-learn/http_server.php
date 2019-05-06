@@ -6,23 +6,16 @@
  * Time: 下午10:30
  */
 
-require "./vendor/autoload.php";
-
-use Symfony\Component\Dotenv\Dotenv;
-
-$dotenv = new Dotenv();
-$dotenv->load(__DIR__ . '/.env');
-
-print_r(env("WORKER_NUM"));
-print_r($_ENV['WORKER_NUM']);
-print_r(getenv('WORKER_NUM'));
+require_once './bootstrap/app.php';
 
 $http = new swoole_http_server("127.0.0.1", 9501,SWOOLE_BASE);
 $http->set(['worker_num' => 4]);
 
-
 $http->on('request', function ($request, swoole_http_response $response) {
     \App\Log::debug("hello world!");
+
+    $rabbitMQ = config("queue.rabbitMQ");
+    var_dump($rabbitMQ['host']);
 
     $response->header('Last-Modified', 'Thu, 18 Jun 2015 10:24:27 GMT');
     $response->header('E-Tag', '55829c5b-17');
