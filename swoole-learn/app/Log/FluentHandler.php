@@ -6,7 +6,7 @@
  * Time: 下午9:34
  */
 
-namespace App;
+namespace App\Log;
 
 use Monolog\Logger;
 use \Monolog\Handler\AbstractHandler;
@@ -15,7 +15,7 @@ use Fluent\Logger\FluentLogger;
 class FluentHandler extends AbstractHandler
 {
     const DEFAULT_LISTEN_PORT = 24224;
-    const DEFAULT_ADDRESS     = "192.168.199.113";
+    const DEFAULT_ADDRESS     = "10.11.1.172";
 
     protected static $_client = null;
     protected static $_async;

@@ -5,7 +5,7 @@
  * Date: 2019/4/27
  * Time: 下午6:12
  */
-namespace App;
+namespace App\Log;
 
 use Monolog\Logger;
 use \Monolog\Handler\AbstractHandler;
@@ -24,6 +24,7 @@ class FileHandler extends AbstractHandler
 
     public function handle(array $record)
     {
+        var_dump($record);
         $fh = self::getInstance();
         switch (self::$_async) {
             case true:

@@ -7,20 +7,49 @@
  */
 
 require_once './bootstrap/app.php';
+require_once './routes/api.php';
+
+use App\Http\Router;
 
 $http = new swoole_http_server("127.0.0.1", 9501,SWOOLE_BASE);
-$http->set(['worker_num' => 4]);
+$http->set(['worker_num' => 1]);
 
-$http->on('request', function ($request, swoole_http_response $response) {
-    \App\Log::debug("hello world!");
+$queue = new \SplQueue();
 
-    $rabbitMQ = config("queue.rabbitMQ");
-    var_dump($rabbitMQ['host']);
+$http->on('WorkerStart', function () use ($queue) {
+    go(function() use ($queue) {
+        while (true) {
+            if (!$queue->isEmpty()) {
+                $element = $queue->dequeue();
+                var_dump($element);
+            }
+            \Swoole\Coroutine::sleep(1);
+        }
+    });
+});
 
-    $response->header('Last-Modified', 'Thu, 18 Jun 2015 10:24:27 GMT');
-    $response->header('E-Tag', '55829c5b-17');
-    $response->header('Accept-Ranges', 'bytes');
-    $response->end("<h1>\nHello Swoole.\n</h1>");
+$http->on('request', function (swoole_http_request $request, swoole_http_response $response) use ($queue) {
+    $queue->enqueue($request->get["name"]);
+
+    $method = $request->server["request_method"];
+    $pathInfo = $request->server["path_info"];
+    $key = $method . $pathInfo;
+    if (isset(Router::$routerList[$key])) {
+        $actionArr = explode("@", Router::$routerList[$key]);
+        $controller = "return new App\Http\Controllers\\" . current($actionArr). "();";
+        $result = call_user_func(array(eval($controller), end($actionArr)), $request);
+    } else {
+        $result = \GuzzleHttp\json_encode(["message"=>"router not found"]);
+    }
+
+
+//    \App\Log\Log::debug("hello world!", "abcd");
+
+    //  $rabbitMQ = config("queue.rabbitMQ");
+    //  var_dump($rabbitMQ['host']);
+
+    $response->header('Content-Type', 'application/json');
+    $response->end($result);
 });
 
 $http->start();

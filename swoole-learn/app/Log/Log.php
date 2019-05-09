@@ -5,13 +5,13 @@
  * Date: 2019/4/27
  * Time: 下午5:54
  */
-namespace App;
+namespace App\Log;
 
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 use Swoole\Mysql\Exception;
-use App\FileHandler;
-use App\FluentHandler;
+use App\Log\FileHandler;
+use App\Log\FluentHandler;
 
 class Log
 {
@@ -19,17 +19,23 @@ class Log
 
     public function __construct()
     {
-        $logger = new Logger("");
+        $logger = new Logger("HiPHP");
         $logger->pushHandler(new FileHandler());
         $logger->pushHandler(new FluentHandler());
         self::$_logger = $logger;
     }
 
-    public static function __callStatic($name, $arguments)
+    public static function __callStatic(string $name, array $arguments): void
     {
         if (is_null(self::$_logger)) {
             new static();
         }
-        call_user_func([self::$_logger, $name], "aaa");
+
+        var_dump($arguments);
+
+        $message = $arguments[0];
+        $context['extra_params'] = $arguments[1];
+        $context['process_id'] = (new \Swoole\Process(function (){}))->pid;
+        call_user_func_array([self::$_logger, $name], [$message, $context]);
     }
 }
