@@ -18,6 +18,7 @@
         "classmap": [],
         "psr-4": {
             "App\\": "app/",
+            "Library\\": "library/",
             "Database\\Migrations\\": "database/migrations"
         },
         "files": [
