@@ -12,6 +12,7 @@
 
 namespace Library\Connection;
 
+use function PHPSTORM_META\elementType;
 use SplQueue;
 use Swoole\Coroutine as co;
 
@@ -41,7 +42,6 @@ trait PoolTrait
         }
         // 建立最小链接
         $count = $this->getMinClient();
-        var_dump($count);
         while ($count--) {
             $this->createConnection();
         }
@@ -49,7 +49,6 @@ trait PoolTrait
 
     protected function getMinClient()
     {
-        var_dump(Pool::getMin());
         return $this->min_client === PHP_INT_MAX ? Pool::getMin() : $this->min_client;
     }
 
@@ -76,6 +75,12 @@ trait PoolTrait
             co::suspend();
             return $this->connection->pop();
         }
+
+        if ($this->connection->count() === 0) {
+            $this->last_run_out_time = time();
+        }
+
+        return $this->connection->pop();
     }
 
     /**
@@ -124,7 +129,7 @@ trait PoolTrait
      * 重新建立链接
      * @param $connection
      */
-    public function reconnect()
+    public function reconnect($connection)
     {
         $this->close();
         return $this->connect();

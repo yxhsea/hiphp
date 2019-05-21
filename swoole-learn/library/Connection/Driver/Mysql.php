@@ -45,8 +45,6 @@ class Mysql implements PoolInterface
             'timeout'  => 3,
             'charset'  => 'utf8'
         ]);
-        var_dump($connection);
-        var_dump($reconnect);
 
         if ($reconnect ===  false) {
             throw new \Exception('Can not connect to database server');

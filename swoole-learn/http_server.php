@@ -33,26 +33,13 @@ $http->on('WorkerStart', function () use ($queue) {
 });
 
 $http->on('request', function (swoole_http_request $request, swoole_http_response $response) use ($queue) {
-    $swoole_mysql = new Swoole\Coroutine\MySQL();
-    $swoole_mysql->connect([
+
+    $connection = new \Library\Connection\Driver\Redis([
         'host' => '10.11.1.172',
-        'port' => 3307,
-        'user' => 'root',
-        'password' => 'root',
-        'database' => 'guest',
+        'port' => 6379
     ]);
-    var_dump($swoole_mysql);
-
-/*
-    $connection = new Mysql([
-        'host'     => '10.11.1.172',
-        'user'     => 'root',
-        'password' => 'root',
-        'database' => 'guest',
-        'port'     => 3307,
-    ]);*/
-//    var_dump($connection);
-
+    $conn = new Library\Cache\Adapter\Redis($connection);
+    $conn->set("test", "value");
 
     // $queue->enqueue($request->get["name"]);
 
