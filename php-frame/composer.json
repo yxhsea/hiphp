@@ -1,0 +1,17 @@
+{
+    "name": "administrator/php-frame",
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        }
+    },
+    "authors": [
+        {
+            "name": "yxhsea",
+            "email": "yxhsea@foxmail.com"
+        }
+    ],
+    "require": {
+        "psr/container": "^1.0"
+    }
+}
